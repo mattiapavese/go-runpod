@@ -108,8 +108,6 @@ func (c *Client) CreatePod(config *CreatePodConfig) (*Pod, error) {
 
 	mutation := BuildFindAndDeployOnDemandMutation(config)
 
-	fmt.Println(mutation)
-
 	resp, err := c.query(mutation)
 
 	if err != nil {

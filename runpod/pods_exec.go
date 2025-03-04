@@ -72,7 +72,7 @@ func (p *Pod) Exec(cmd string, privateKeyPath string) (stdOut string, err error)
 
 	out, stdErr := session.CombinedOutput(cmd)
 	if stdErr != nil {
-		return string(out), &ErrExecOnSSH{StdErr: err.Error()}
+		return string(out), &ErrExecOnSSH{StdErr: stdErr.Error()}
 	}
 
 	return string(out), nil
