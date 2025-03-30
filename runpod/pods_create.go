@@ -48,8 +48,8 @@ func NewCreatePodConfig() *CreatePodConfig {
 
 func (c *Client) CreatePod(config *CreatePodConfig) (*Pod, error) {
 
-	if config.ImageName == "" {
-		return nil, fmt.Errorf("field 'config.ImageName' is required")
+	if config.ImageName == "" && config.TemplateId == "" {
+		return nil, fmt.Errorf("one between 'config.ImageName' and 'config.TemplateId' id required")
 	}
 
 	if config.PodName == "" {
@@ -129,11 +129,9 @@ func (c *Client) CreatePod(config *CreatePodConfig) (*Pod, error) {
 
 func BuildFindAndDeployOnDemandMutation(config *CreatePodConfig) string {
 
-	inputs := `name: "%s", imageName: "%s", gpuTypeId: "%s", cloudType: %s`
+	inputs := `name: "%s", gpuTypeId: "%s", cloudType: %s`
 	inputs = fmt.Sprintf(
-		inputs,
-		config.PodName, config.ImageName,
-		config.GPUTypeId, config.CloudType, // cloudType validate in callee method CreatePod
+		inputs, config.PodName, config.GPUTypeId, config.CloudType, // cloudType validate in callee method CreatePod
 	)
 
 	// copied from python sdk,
@@ -190,6 +188,10 @@ func BuildFindAndDeployOnDemandMutation(config *CreatePodConfig) string {
 
 	if config.NetworkVolumeId != "" {
 		inputs += fmt.Sprintf(`, networkVolumeId: "%s"`, config.NetworkVolumeId)
+	}
+
+	if config.ImageName != "" {
+		inputs += fmt.Sprintf(`, imageName: "%s"`, config.ImageName)
 	}
 
 	if config.TemplateId != "" {
